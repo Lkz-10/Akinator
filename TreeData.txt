@@ -1,0 +1,7 @@
+{"Champion"
+    {"Russian"
+        {"Zenit"}
+        {"Mancity"}
+    }
+    {"Real Madrid"}
+}

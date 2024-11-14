@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../Tree/TreeGlobals.h"
-#include "../Tree/TreeFunctions.h"
 #include "AkinatorFunctions.h"
 
 int main(const int argc, const char** argv)
@@ -21,15 +19,15 @@ int main(const int argc, const char** argv)
 
     assert(root);
 
-    printf("%s\n", root->data);
-
     //Print_inorder(root, stderr);
 
     Guess(root);
 
+    //DrawTree(root, argv[2]);
+
+    //Definition(root, "Zenit");
+
     TreeDtor(root);
-
-
 
     return 0;
 }

@@ -19,13 +19,17 @@ int main(const int argc, const char** argv)
 
     assert(root);
 
+    Run(root, argv);
+
     //Print_inorder(root, stderr);
-
-    Guess(root);
-
     //DrawTree(root, argv[2]);
 
-    //Definition(root, "Zenit");
+    //Guess(root, root, argv[1]);
+
+
+    //Guess(root, root, argv[1]);
+
+    //Definition(root, "Liverpool");
 
     TreeDtor(root);
 

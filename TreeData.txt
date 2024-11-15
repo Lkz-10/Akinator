@@ -1,16 +1,1 @@
-{"Champion"
-    {"the best club in the world"
-        {"Zenit"}
-        {"Mancity"}
-    }
-    {"a bus lover in quarter-finals"
-        {"Real Madrid"}
-        {"Russian"
-            {"located in Moscow"
-                {"Spartak"}
-                {"Krasnodar"}
-            }
-            {"Bayern"}
-        }
-    }
-}
+{"Champion"{"the best club in the world"{"Zenit"}{"Mancity"}}{"a bus lover in quarter-finals"{"Real Madrid"}{"Russian"{"located in Moscow"{"Spartak"}{"from Bashkiria"{"Ufa"}{"Krasnodar"}}}{"called flamingoes"{"Liverpool"}{"Bayern"}}}}}

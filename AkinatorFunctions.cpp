@@ -45,7 +45,56 @@ Node_t* ReadTree(Node_t* parent, FILE* file_ptr)
     return NULL;
 }
 
-int Guess(Node_t* node)
+int Run(Node_t* root, const char** argv)
+{
+    printf("Choose mode:\n  if you want to play enter \"p\"\n  if you want to visualize the tree enter \"v\"\n  "
+           "if you want to get a definition enter \"d\"\n");
+
+    int mode = getchar();
+
+    switch(mode)
+    {
+        case PLAY:
+        {
+            Guess(root, root, argv[1]);
+            break;
+        }
+
+        case VISUALIZE:
+        {
+            DrawTree(root, argv[2]);
+            break;
+        }
+
+        case DEFINITION:
+        {
+            char term[MAX_STRING_SIZE] = {};
+            Definition(root, GetTerm(term));
+
+            break;
+        }
+
+        default:
+        {
+            fprintf(stderr, "Error: wrong mode: \"%c\"! Try again!\n", mode);
+
+            return Run(root, argv);
+        }
+    }
+
+    return 0;
+}
+
+char* GetTerm(char* term)
+{
+    printf("Enter the term\n");
+
+    scanf("\n%[^\n]", term);
+
+    return term;
+}
+
+int Guess(Node_t* root, Node_t* node, const char* data_file_name)
 {
     if (!node)
     {
@@ -67,7 +116,7 @@ int Guess(Node_t* node)
             return 0;
         }
 
-        return Guess(node->left);
+        return Guess(root, node->left, data_file_name);
     }
 
     if (stricmp(answer, "no") == 0)
@@ -88,14 +137,86 @@ int Guess(Node_t* node)
                 return 0;
             }
 
+            CreateNode(root, node, data_file_name);
 
+            return 0;
         }
-        return Guess(node->right);
+        return Guess(root, node->right, data_file_name);
     }
 
     fprintf(stderr, "Wrong answer: %s!\n", answer);
     //while (int c = getchar() != 0 && c != EOF) {}
-    return Guess(node);
+    return Guess(root, node, data_file_name);
+}
+
+int CreateNode(Node_t* root, Node_t* node, const char* data_file_name)
+{
+    assert(node);
+
+    printf("Who is it?\n");
+
+    char new_node_name[MAX_STRING_SIZE] = {};
+    char new_question [MAX_STRING_SIZE] = {};
+
+    scanf("\n%[^\n]", new_node_name);
+
+    printf("What is the difference between \"%s\" and \"%s\"? \"%s\" is ...\n",
+           new_node_name, node->data, new_node_name);
+
+    scanf("\n%[^\n]", new_question);
+
+    if (node->parent->left == node)
+    {
+        node->parent->left = NewNode(node->parent, new_question);
+
+        node->parent->left->right = node;
+
+        node->parent->left->left = NewNode(node->parent->left, new_node_name);
+
+        node->parent = node->parent->left;
+    }
+
+    if (node->parent->right == node)
+    {
+        node->parent->right = NewNode(node->parent, new_question);
+
+        node->parent->right->right = node;
+
+        node->parent->right->left = NewNode(node->parent->right, new_node_name);
+
+        node->parent = node->parent->right;
+    }
+
+    printf("Do you want to save the changes?\n");
+
+    char answer[MAX_STRING_SIZE] = {};
+
+    scanf("%s", answer);
+
+    if (stricmp(answer, "no") == 0) return 0;
+
+    FILE* file_ptr = fopen(data_file_name, "w");
+
+    PrintData(root, file_ptr);
+    fprintf(file_ptr, "\n");
+
+    fclose(file_ptr);
+
+    return 0;
+}
+
+int PrintData(Node_t* node, FILE* file_ptr)
+{
+    if (!node) return 0;
+
+    fprintf(file_ptr, "{\"%s\"", node->data);
+
+    PrintData(node->left,  file_ptr);
+    PrintData(node->right, file_ptr);
+
+    fprintf(file_ptr, "}");
+
+    return 0;
 }
 
 int Definition(Node_t* root, const char* elem)

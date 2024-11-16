@@ -1,53 +1,8 @@
 #include "AkinatorFunctions.h"
 
-Node_t* ReadTree(Node_t* parent, FILE* file_ptr)
-{
-    if (!file_ptr) {
-        fprintf(stderr, "File error!\n");
-        return NULL;
-    }
-
-    int symbol = fgetc(file_ptr);
-
-    if (symbol == '{')
-    {
-        char node_name[MAX_STRING_SIZE] = {};
-        int  nchar = 0;
-
-        if (fscanf(file_ptr, "\"%[^\"]\"%n", node_name, &nchar) < 1)
-        {
-            fprintf(stderr, "Reading error!\n");
-            return NULL;
-        }
-        //fprintf(stderr, "nchar: %d\n", nchar);
-
-        Node_t* node = NewNode(parent, node_name);
-
-        symbol = fgetc(file_ptr);
-
-        if (symbol == '}')
-        {
-            while (symbol != '{' && symbol != EOF) symbol = fgetc(file_ptr);
-            fseek(file_ptr, -1, SEEK_CUR);
-
-            return node;
-        }
-
-        while (symbol != '{' && symbol != EOF) symbol = fgetc(file_ptr);
-        fseek(file_ptr, -1, SEEK_CUR);
-
-        node->left  = ReadTree(node, file_ptr);
-        node->right = ReadTree(node, file_ptr);
-
-        return node;
-    }
-
-    return NULL;
-}
-
 int Run(Node_t* root, const char** argv)
 {
-    printf("Choose mode:\n  if you want to play enter \"p\"\n  if you want to visualize the tree enter \"v\"\n  "
+    printf("\nChoose mode:\n  if you want to play enter \"p\"\n  if you want to visualize the tree enter \"v\"\n  "
            "if you want to get a definition enter \"d\"\n");
 
     int mode = getchar();
@@ -87,7 +42,7 @@ int Run(Node_t* root, const char** argv)
 
 char* GetTerm(char* term)
 {
-    printf("Enter the term\n");
+    printf("\nEnter the team\n");
 
     scanf("\n%[^\n]", term);
 
@@ -112,7 +67,7 @@ int Guess(Node_t* root, Node_t* node, const char* data_file_name)
     {
         if (node->left == NULL)
         {
-            printf("I knew it!\n\n");
+            printf("\nI knew it!\n\n");
             return 0;
         }
 
@@ -123,16 +78,16 @@ int Guess(Node_t* root, Node_t* node, const char* data_file_name)
     {
         if (node->right == NULL)
         {
-            if (stricmp(node->data, "Zenit") == 0)
+            if (stricmp(node->data, "Zenit") == 0 || stricmp(node->data, "Kartel") == 0)
             {
-                printf("Error: dumb user!\n\n");
+                printf("\nError: dumb user!\n\n");
 
                 return 0;
             }
 
             if (stricmp(node->data, "Mancity") == 0)
             {
-                printf("Error: user doesn't understand football!\n\n");
+                printf("\nError: user doesn't understand football!\n\n");
 
                 return 0;
             }
@@ -145,7 +100,7 @@ int Guess(Node_t* root, Node_t* node, const char* data_file_name)
     }
 
     fprintf(stderr, "Wrong answer: %s!\n", answer);
-    //while (int c = getchar() != 0 && c != EOF) {}
+
     return Guess(root, node, data_file_name);
 }
 
@@ -175,8 +130,7 @@ int CreateNode(Node_t* root, Node_t* node, const char* data_file_name)
 
         node->parent = node->parent->left;
     }
-
-    if (node->parent->right == node)
+    else if (node->parent->right == node)
     {
         node->parent->right = NewNode(node->parent, new_question);
 
@@ -233,11 +187,11 @@ int Definition(Node_t* root, const char* elem)
 
     if (def_cnt < 1)
     {
-        fprintf(stderr, "Error: no such club: \"%s\"!\n\n", elem);
+        fprintf(stderr, "Error: no such team: \"%s\"!\n\n", elem);
         return -1;
     }
 
-    printf("%s is ", elem);
+    printf("\n%s is ", elem);
 
     for (int i = def_cnt - 1; i > 0; --i)
     {
@@ -315,11 +269,15 @@ int DrawNode(Node_t* node, FILE* file_ptr)
 
     if (!node->parent)
     {
-        fprintf(file_ptr, "style = \"filled\", fillcolor = \"bisque2\", ");
+        fprintf(file_ptr, "color = \"goldenrod4\", style = \"filled\", fillcolor = \"bisque2\", ");
     }
     else if (!node->left && !node->right)
     {
-        fprintf(file_ptr, "style = \"filled\", fillcolor = \"darkolivegreen1\", ");
+        fprintf(file_ptr, "color = \"limegreen\", style = \"filled\", fillcolor = \"darkolivegreen1\", ");
+    }
+    else
+    {
+        fprintf(file_ptr, "color = \"khaki3\", style = \"filled\", fillcolor = \"lemonchiffon\", ");
     }
 
     fprintf(file_ptr, "label = \"{%-30s | address = %p| left = %p | right = %p | parent = %p}\"];\n",
@@ -330,14 +288,14 @@ int DrawNode(Node_t* node, FILE* file_ptr)
 
     if (node->left)
     {
-        fprintf(file_ptr, "  edge[color = \"green\"];\n");
-        fprintf(file_ptr, "  \"%s\" -> \"%s\";\n", node->data, node->left->data);
+        fprintf(file_ptr, "  edge[color = \"green\", fontcolor = \"green3\"];\n");
+        fprintf(file_ptr, "  \"%s\" -> \"%s\" [label = \" yes\"];\n", node->data, node->left->data);
     }
 
     if (node->right)
     {
-        fprintf(file_ptr, "  edge[color = \"red\"];\n");
-        fprintf(file_ptr, "  \"%s\" -> \"%s\";\n", node->data, node->right->data);
+        fprintf(file_ptr, "  edge[color = \"red\", fontcolor = \"red\"];\n");
+        fprintf(file_ptr, "  \"%s\" -> \"%s\" [label = \" no\"];\n", node->data, node->right->data);
     }
 
     return 0;

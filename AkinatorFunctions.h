@@ -6,18 +6,8 @@
 
 #include "../Tree/TreeGlobals.h"
 #include "../Tree/TreeFunctions.h"
+#include "AkinatorGlobals.h"
 
-const int MAX_STRING_SIZE = 52;
-const int DEF_ARR_SIZE    = 52;
-
-enum modes_t
-{
-    PLAY       = 'p',
-    VISUALIZE  = 'v',
-    DEFINITION = 'd'
-};
-
-Node_t* ReadTree   (Node_t* parent, FILE* file_ptr);
 int     Run        (Node_t* root, const char** argv);
 int     Guess      (Node_t* root, Node_t* node, const char* data_file_name);
 int     CreateNode (Node_t* root, Node_t* node, const char* data_file_name);

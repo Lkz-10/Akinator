@@ -11,7 +11,8 @@ enum modes_t
 {
     PLAY       = 'p',
     VISUALIZE  = 'v',
-    DEFINITION = 'd'
+    DEFINITION = 'd',
+    COMPARE    = 'c'
 };
 
 #endif

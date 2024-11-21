@@ -3,7 +3,7 @@
 int Run(Node_t* root, const char** argv)
 {
     printf("\nChoose mode:\n  if you want to play enter \"p\"\n  if you want to visualize the tree enter \"v\"\n  "
-           "if you want to get a definition enter \"d\"\n");
+           "if you want to get a definition enter \"d\"\n  if you want to compare two teams enter\"c\"\n");
 
     int mode = getchar();
 
@@ -11,22 +11,26 @@ int Run(Node_t* root, const char** argv)
     {
         case PLAY:
         {
-            Guess(root, root, argv[1]);
-            break;
+            return Guess(root, root, argv[1]);
         }
 
         case VISUALIZE:
         {
-            DrawTree(root, argv[2]);
-            break;
+            return DrawTree(root, argv[2]);
         }
 
         case DEFINITION:
         {
             char term[MAX_STRING_SIZE] = {};
-            Definition(root, GetTerm(term));
+            return Definition(root, GetTerm(term));
+        }
 
-            break;
+        case COMPARE:
+        {
+            char term1[MAX_STRING_SIZE] = {};
+            char term2[MAX_STRING_SIZE] = {};
+
+            return Compare(root, GetTerm(term1), GetTerm(term2));
         }
 
         default:
@@ -96,6 +100,7 @@ int Guess(Node_t* root, Node_t* node, const char* data_file_name)
 
             return 0;
         }
+
         return Guess(root, node->right, data_file_name);
     }
 
@@ -108,14 +113,14 @@ int CreateNode(Node_t* root, Node_t* node, const char* data_file_name)
 {
     assert(node);
 
-    printf("Who is it?\n");
+    printf("\nWho is it?\n");
 
     char new_node_name[MAX_STRING_SIZE] = {};
     char new_question [MAX_STRING_SIZE] = {};
 
     scanf("\n%[^\n]", new_node_name);
 
-    printf("What is the difference between \"%s\" and \"%s\"? \"%s\" is ...\n",
+    printf("\nWhat is the difference between \"%s\" and \"%s\"? \"%s\" is ...\n",
            new_node_name, node->data, new_node_name);
 
     scanf("\n%[^\n]", new_question);
@@ -141,7 +146,7 @@ int CreateNode(Node_t* root, Node_t* node, const char* data_file_name)
         node->parent = node->parent->right;
     }
 
-    printf("Do you want to save the changes?\n");
+    printf("\nDo you want to save the changes?\n");
 
     char answer[MAX_STRING_SIZE] = {};
 
@@ -185,7 +190,7 @@ int Definition(Node_t* root, const char* elem)
 
     int def_cnt = MakeDef(root, elem, definition);
 
-    if (def_cnt < 1)
+    if (def_cnt < 0)
     {
         fprintf(stderr, "Error: no such team: \"%s\"!\n\n", elem);
         return -1;
@@ -229,6 +234,84 @@ int MakeDef(Node_t* node, const char* elem, char definition[DEF_ARR_SIZE][MAX_ST
     }
 
     return -1;
+}
+
+int Compare(Node_t* root, const char* term1, const char* term2)
+{
+    if (!root || !term1 || !term2)
+    {
+        fprintf(stderr, "Comparing error: root(%p), term1(%p), term2(%p)!\n", root, term1, term2);
+
+        return -1;
+    }
+
+    char definition1[DEF_ARR_SIZE][MAX_STRING_SIZE] = {};
+    char definition2[DEF_ARR_SIZE][MAX_STRING_SIZE] = {};
+
+    int def_index1 = MakeDef(root, term1, definition1) - 1;
+    int def_index2 = MakeDef(root, term2, definition2) - 1;
+
+    if (def_index1 < 0)
+    {
+        fprintf(stderr, "No such team: %s!\n", term1);
+        return -1;
+    }
+
+    if (def_index2 < 0)
+    {
+        fprintf(stderr, "No such team: %s!\n", term2);
+        return -1;
+    }
+
+    if (strcmp(definition1[def_index1], definition2[def_index2]) == 0)
+    {
+        printf("\n%s and %s are both %s", term1, term2, definition1[def_index1]);
+
+        def_index1--;
+        def_index2--;
+
+        while (def_index1 >= 0 && def_index2 >= 0 &&
+               strcmp(definition1[def_index1], definition2[def_index2]) == 0)
+        {
+            printf(", %s", definition1[def_index1]);
+
+            --def_index1;
+            --def_index2;
+        }
+
+        printf("\n");
+    }
+
+    if (def_index1 >= 0)
+    {
+        printf("\n%s is %s", term1, definition1[def_index1--]);
+
+        for (int i = def_index1; i >= 0; --i)
+        {
+            printf(", %s", definition1[i]);
+        }
+    }
+
+    if (def_index2 >= 0)
+    {
+        printf("\n%s is %s", term2, definition2[def_index2--]);
+
+        for (int i = def_index2; i >= 0; --i)
+        {
+            printf(", %s", definition2[i]);
+        }
+
+        printf("\n");
+    }
+
+    return 0;
+}
+
+int MaxLen(size_t len1, size_t len2)
+{
+    if (len1 > len2) return (int)len1;
+
+    return (int)len2;
 }
 
 int DrawTree(Node_t* root, const char* file_name)

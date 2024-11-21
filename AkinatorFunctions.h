@@ -16,6 +16,9 @@ int     DrawTree   (Node_t* root, const char* file_name);
 int     DrawNode   (Node_t* node, FILE* file_ptr);
 int     Definition (Node_t* root, const char* elem);
 int     MakeDef    (Node_t* node, const char* elem, char definition[DEF_ARR_SIZE][MAX_STRING_SIZE]);
+int     Compare    (Node_t* root, const char* term1, const char* term2);
+int     MaxLen     (size_t len1, size_t len2);
 char*   GetTerm    (char* term);
+
 
 #endif

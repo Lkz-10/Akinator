@@ -1,1 +1,1 @@
-{"Champion"{"from Russia"{"located in St. Petersburg"{"Zenit"}{"Kartel"}}{"Mancity"}}{"a bus lover in quarter-finals"{"Real Madrid"}{"Russian"{"located in Moscow"{"Spartak"}{"from Bashkiria"{"Ufa"}{"Krasnodar"}}}{"named after a city"{"Liverpool"}{"Bayern"}}}}}
+{"Champion"{"from Russia"{"located in St. Petersburg"{"Zenit"}{"Kartel"}}{"Mancity"}}{"a bus lover in quarter-finals"{"Real Madrid"}{"Russian"{"located in Moscow"{"Spartak"}{"from Bashkiria"{"Ufa"}{"Krasnodar"}}}{"named after a city"{"treble owner"{"Barcelona"}{"Liverpool"}}{"Bayern"}}}}}
